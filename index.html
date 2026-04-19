@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Teaching Admin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: #f5f2ee;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 4px;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.08);
+      padding: 3rem 2.5rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .app-title {
+      font-size: 1.6rem;
+      letter-spacing: 0.04em;
+      color: #1a1a1a;
+      margin-bottom: 0.4rem;
+    }
+
+    .app-subtitle {
+      font-size: 0.85rem;
+      color: #888;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.08em;
+      margin-bottom: 2.5rem;
+    }
+
+    #status-box {
+      background: #f9f7f4;
+      border: 1px solid #e8e4de;
+      border-radius: 3px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+      color: #555;
+      min-height: 3.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-align: left;
+    }
+
+    #status-box.ok   { border-color: #b7d9b0; background: #f3faf2; color: #2d6e28; }
+    #status-box.err  { border-color: #f0bcbc; background: #fdf3f3; color: #8c2a2a; }
+    #status-box.info { border-color: #b8cfe8; background: #f2f6fb; color: #1e4a7a; }
+
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: currentColor;
+      opacity: 0.6;
+    }
+
+    button {
+      font-family: 'Georgia', serif;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.8rem;
+      border-radius: 3px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: 0.02em;
+    }
+    button:hover  { opacity: 0.85; }
+    button:active { transform: scale(0.98); }
+
+    #btn-signin {
+      background: #2a5298;
+      color: white;
+      width: 100%;
+      margin-bottom: 0.8rem;
+    }
+
+    #btn-signout {
+      background: none;
+      border: 1px solid #ccc;
+      color: #666;
+      font-size: 0.82rem;
+      padding: 0.5rem 1.2rem;
+      display: none;
+    }
+
+    #drive-result {
+      margin-top: 1.5rem;
+      font-size: 0.82rem;
+      color: #888;
+      font-family: 'Courier New', monospace;
+      word-break: break-all;
+      display: none;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 1.2rem;
+    }
+
+    footer {
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: #bbb;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1 class="app-title">Teaching Admin</h1>
+  <p class="app-subtitle">phase 1 · auth test</p>
+
+  <p class="section-label">Connection status</p>
+
+  <div id="status-box" class="info">
+    <span class="dot"></span>
+    <span id="status-text">Not signed in. Click below to connect with Google.</span>
+  </div>
+
+  <button id="btn-signin" onclick="signIn()">Sign in with Google</button>
+  <button id="btn-signout" onclick="signOut()">Sign out</button>
+
+  <div id="drive-result"></div>
+</div>
+
+<footer>teaching-admin-app · local build</footer>
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<!-- Google API client -->
+<script src="https://apis.google.com/js/api.js"></script>
+
+<script>
+  // ── CONFIGURATION ──────────────────────────────────────────────
+  // Paste your OAuth Client ID here (the one ending in .apps.googleusercontent.com)
+  const CLIENT_ID = '190451689024-3c3ilpi8pefv1l10brpspoos4hct716t.apps.googleusercontent.com';
+  const SCOPES    = 'https://www.googleapis.com/auth/drive.file';
+  // ───────────────────────────────────────────────────────────────
+
+  let tokenClient;
+  let gapiReady = false;
+
+  // Load the Drive API via gapi
+  function gapiLoad() {
+    gapi.load('client', async () => {
+      await gapi.client.init({});
+      await gapi.client.load('https://www.googleapis.com/discovery/v1/apis/drive/v3/rest');
+      gapiReady = true;
+    });
+  }
+
+  // Initialise the token client once GSI is ready
+  window.addEventListener('load', () => {
+    // Wait a moment for GSI script to load
+    setTimeout(() => {
+      try {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: SCOPES,
+          callback: handleTokenResponse,
+        });
+      } catch(e) {
+        setStatus('err', 'Could not initialise Google auth. Check your Client ID.');
+        console.error(e);
+      }
+    }, 800);
+
+    gapiLoad();
+  });
+
+  function signIn() {
+    if (!tokenClient) {
+      setStatus('err', 'Auth not ready yet. Wait a moment and try again.');
+      return;
+    }
+    setStatus('info', 'Opening Google sign-in…');
+    tokenClient.requestAccessToken({ prompt: 'consent' });
+  }
+
+  async function handleTokenResponse(resp) {
+    if (resp.error) {
+      setStatus('err', 'Sign-in failed: ' + resp.error);
+      return;
+    }
+    setStatus('ok', 'Signed in! Testing Drive connection…');
+    document.getElementById('btn-signin').style.display  = 'none';
+    document.getElementById('btn-signout').style.display = 'inline-block';
+
+    // Test Drive access: list files in the app folder (or root)
+    await testDriveConnection();
+  }
+
+  async function testDriveConnection() {
+    try {
+      const res = await gapi.client.drive.files.list({
+        pageSize: 5,
+        fields: 'files(id, name)',
+        spaces: 'drive',
+      });
+      const files = res.result.files;
+      const driveDiv = document.getElementById('drive-result');
+      driveDiv.style.display = 'block';
+
+      if (files.length === 0) {
+        setStatus('ok', '✓ Drive connected. No files found yet — that\'s expected for a new app.');
+        driveDiv.textContent = 'Drive response: empty file list (OK)';
+      } else {
+        setStatus('ok', `✓ Drive connected. Found ${files.length} file(s) — everything is working.`);
+        driveDiv.textContent = 'Files seen: ' + files.map(f => f.name).join(', ');
+      }
+    } catch(e) {
+      setStatus('err', 'Drive connection failed: ' + (e.message || e.result?.error?.message));
+      console.error(e);
+    }
+  }
+
+  function signOut() {
+    google.accounts.oauth2.revoke(gapi.client.getToken()?.access_token, () => {});
+    gapi.client.setToken(null);
+    setStatus('info', 'Signed out.');
+    document.getElementById('btn-signin').style.display  = 'inline-block';
+    document.getElementById('btn-signout').style.display = 'none';
+    document.getElementById('drive-result').style.display = 'none';
+  }
+
+  function setStatus(type, msg) {
+    const box  = document.getElementById('status-box');
+    const text = document.getElementById('status-text');
+    box.className = 'ok err info'.split(' ').reduce((c, t) => c.replace(t,''), box.className).trim();
+    box.classList.add(type);
+    text.textContent = msg;
+  }
+</script>
+</body>
+</html>
