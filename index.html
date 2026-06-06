@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -14,9 +14,222 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+    }
+
+    /* ── App shell ─────────────────────────────────────── */
+    #app-shell {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      min-height: 100vh;
+    }
+
+    #app-shell.visible { display: flex; }
+
+    /* ── Top bar ───────────────────────────────────────── */
+    .top-bar {
+      background: white;
+      border-bottom: 1px solid #e8e4de;
+      padding: 1rem 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .top-bar-title {
+      font-size: 1.1rem;
+      letter-spacing: 0.04em;
+      color: #1a1a1a;
+    }
+
+    .top-bar-user {
+      font-size: 0.75rem;
+      color: #aaa;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .top-bar-signout {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      color: #888;
+      font-family: 'Georgia', serif;
+      font-size: 0.72rem;
+      padding: 0.25rem 0.6rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .top-bar-signout:hover { opacity: 0.7; }
+
+    /* ── Page content ──────────────────────────────────── */
+    .page-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.4rem;
+      padding-bottom: 5rem;
+    }
+
+    /* ── Views ─────────────────────────────────────────── */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .view-title {
+      font-size: 1.4rem;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.3rem;
+    }
+
+    .view-subtitle {
+      font-size: 0.8rem;
+      color: #aaa;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.6rem;
+    }
+
+    /* ── Dashboard cards ───────────────────────────────── */
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .dash-card {
+      background: white;
+      border-radius: 4px;
+      padding: 1.1rem 1rem;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    }
+
+    .dash-card-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #aaa;
+      margin-bottom: 0.4rem;
+    }
+
+    .dash-card-value {
+      font-size: 1.8rem;
+      font-weight: normal;
+      color: #2a5298;
+    }
+
+    .dash-card-sub {
+      font-size: 0.72rem;
+      color: #bbb;
+      font-family: 'Courier New', monospace;
+      margin-top: 0.2rem;
+    }
+
+    .status-row {
+      background: white;
+      border-radius: 4px;
+      padding: 0.9rem 1rem;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+      font-size: 0.85rem;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .status-row .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: #b7d9b0;
+    }
+
+    /* ── Placeholder view content ──────────────────────── */
+    .placeholder-box {
+      background: white;
+      border-radius: 4px;
+      padding: 2.5rem 1.5rem;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+      text-align: center;
+      color: #ccc;
+    }
+
+    .placeholder-box .ph-icon {
+      font-size: 2.4rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .placeholder-box p {
+      font-size: 0.85rem;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Bottom nav ────────────────────────────────────── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      background: white;
+      border-top: 1px solid #e8e4de;
+      display: flex;
+      height: 4rem;
+      z-index: 20;
+    }
+
+    .nav-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 0.22rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem 0;
+      transition: background 0.12s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-tab:active { background: #f5f2ee; }
+
+    .nav-tab .tab-icon {
+      width: 22px;
+      height: 22px;
+      stroke: #bbb;
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.15s;
+    }
+
+    .nav-tab .tab-label {
+      font-family: 'Courier New', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      color: #bbb;
+      text-transform: uppercase;
+      transition: color 0.15s;
+    }
+
+    .nav-tab.active .tab-icon { stroke: #2a5298; }
+    .nav-tab.active .tab-label { color: #2a5298; }
+
+    /* ── Auth screen ───────────────────────────────────── */
+    #auth-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
       padding: 2rem;
+      min-height: 100vh;
     }
 
     .card {
@@ -89,25 +302,6 @@
       background: #2a5298;
       color: white;
       width: 100%;
-      margin-bottom: 0.8rem;
-    }
-
-    #btn-signout {
-      background: none;
-      border: 1px solid #ccc;
-      color: #666;
-      font-size: 0.82rem;
-      padding: 0.5rem 1.2rem;
-      display: none;
-    }
-
-    #drive-result {
-      margin-top: 1.5rem;
-      font-size: 0.82rem;
-      color: #888;
-      font-family: 'Courier New', monospace;
-      word-break: break-all;
-      display: none;
     }
 
     .section-label {
@@ -128,24 +322,116 @@
 </head>
 <body>
 
-<div class="card">
-  <h1 class="app-title">Teaching Admin</h1>
-  <p class="app-subtitle">phase 1 · auth test</p>
+<!-- ── Auth screen ─────────────────────────────────────────────── -->
+<div id="auth-screen">
+  <div class="card">
+    <h1 class="app-title">Teaching Admin</h1>
+    <p class="app-subtitle">phase 2 · nav shell</p>
 
-  <p class="section-label">Connection status</p>
+    <p class="section-label">Connection status</p>
 
-  <div id="status-box" class="info">
-    <span class="dot"></span>
-    <span id="status-text">Not signed in. Click below to connect with Google.</span>
+    <div id="status-box" class="info">
+      <span class="dot"></span>
+      <span id="status-text">Not signed in. Click below to connect with Google.</span>
+    </div>
+
+    <button id="btn-signin" onclick="signIn()">Sign in with Google</button>
   </div>
-
-  <button id="btn-signin" onclick="signIn()">Sign in with Google</button>
-  <button id="btn-signout" onclick="signOut()">Sign out</button>
-
-  <div id="drive-result"></div>
+  <footer>teaching-admin-app · local build</footer>
 </div>
 
-<footer>teaching-admin-app · local build</footer>
+<!-- ── App shell (shown after sign-in) ────────────────────────── -->
+<div id="app-shell">
+
+  <div class="top-bar">
+    <span class="top-bar-title">Teaching Admin</span>
+    <div class="top-bar-user">
+      <button class="top-bar-signout" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <!-- Dashboard -->
+    <div class="view active" id="view-dashboard">
+      <h2 class="view-title">Dashboard</h2>
+      <p class="view-subtitle">overview</p>
+
+      <div class="dash-grid">
+        <div class="dash-card">
+          <div class="dash-card-label">Students</div>
+          <div class="dash-card-value">—</div>
+          <div class="dash-card-sub">no data yet</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">This week</div>
+          <div class="dash-card-value">—</div>
+          <div class="dash-card-sub">no lessons yet</div>
+        </div>
+      </div>
+
+      <div class="status-row">
+        <span class="dot"></span>
+        <span id="drive-status-text">Drive connected</span>
+      </div>
+    </div>
+
+    <!-- Students -->
+    <div class="view" id="view-students">
+      <h2 class="view-title">Students</h2>
+      <p class="view-subtitle">roster</p>
+      <div class="placeholder-box">
+        <div class="ph-icon">👤</div>
+        <p>student list coming soon</p>
+      </div>
+    </div>
+
+    <!-- Lessons -->
+    <div class="view" id="view-lessons">
+      <h2 class="view-title">Lessons</h2>
+      <p class="view-subtitle">planner</p>
+      <div class="placeholder-box">
+        <div class="ph-icon">📋</div>
+        <p>lesson planner coming soon</p>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+
+    <button class="nav-tab active" data-view="dashboard" onclick="switchTab(this)">
+      <svg class="tab-icon" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/>
+        <rect x="14" y="14" width="7" height="7" rx="1"/>
+      </svg>
+      <span class="tab-label">Dashboard</span>
+    </button>
+
+    <button class="nav-tab" data-view="students" onclick="switchTab(this)">
+      <svg class="tab-icon" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+      <span class="tab-label">Students</span>
+    </button>
+
+    <button class="nav-tab" data-view="lessons" onclick="switchTab(this)">
+      <svg class="tab-icon" viewBox="0 0 24 24">
+        <rect x="4" y="3" width="16" height="18" rx="2"/>
+        <line x1="8" y1="8" x2="16" y2="8"/>
+        <line x1="8" y1="12" x2="16" y2="12"/>
+        <line x1="8" y1="16" x2="13" y2="16"/>
+      </svg>
+      <span class="tab-label">Lessons</span>
+    </button>
+
+  </nav>
+
+</div><!-- /app-shell -->
 
 <!-- Google Identity Services -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -153,16 +439,12 @@
 <script src="https://apis.google.com/js/api.js"></script>
 
 <script>
-  // ── CONFIGURATION ──────────────────────────────────────────────
-  // Paste your OAuth Client ID here (the one ending in .apps.googleusercontent.com)
   const CLIENT_ID = '190451689024-3c3ilpi8pefv1l10brpspoos4hct716t.apps.googleusercontent.com';
   const SCOPES    = 'https://www.googleapis.com/auth/drive.file';
-  // ───────────────────────────────────────────────────────────────
 
   let tokenClient;
   let gapiReady = false;
 
-  // Load the Drive API via gapi
   function gapiLoad() {
     gapi.load('client', async () => {
       await gapi.client.init({});
@@ -171,9 +453,7 @@
     });
   }
 
-  // Initialise the token client once GSI is ready
   window.addEventListener('load', () => {
-    // Wait a moment for GSI script to load
     setTimeout(() => {
       try {
         tokenClient = google.accounts.oauth2.initTokenClient({
@@ -186,7 +466,6 @@
         console.error(e);
       }
     }, 800);
-
     gapiLoad();
   });
 
@@ -204,12 +483,8 @@
       setStatus('err', 'Sign-in failed: ' + resp.error);
       return;
     }
-    setStatus('ok', 'Signed in! Testing Drive connection…');
-    document.getElementById('btn-signin').style.display  = 'none';
-    document.getElementById('btn-signout').style.display = 'inline-block';
-
-    // Test Drive access: list files in the app folder (or root)
     await testDriveConnection();
+    enterApp();
   }
 
   async function testDriveConnection() {
@@ -220,35 +495,49 @@
         spaces: 'drive',
       });
       const files = res.result.files;
-      const driveDiv = document.getElementById('drive-result');
-      driveDiv.style.display = 'block';
-
-      if (files.length === 0) {
-        setStatus('ok', '✓ Drive connected. No files found yet — that\'s expected for a new app.');
-        driveDiv.textContent = 'Drive response: empty file list (OK)';
-      } else {
-        setStatus('ok', `✓ Drive connected. Found ${files.length} file(s) — everything is working.`);
-        driveDiv.textContent = 'Files seen: ' + files.map(f => f.name).join(', ');
-      }
+      const msg = files.length === 0
+        ? 'Drive connected — no files yet'
+        : `Drive connected · ${files.length} file(s) visible`;
+      document.getElementById('drive-status-text').textContent = msg;
     } catch(e) {
-      setStatus('err', 'Drive connection failed: ' + (e.message || e.result?.error?.message));
+      document.getElementById('drive-status-text').textContent =
+        'Drive connected (file list unavailable)';
       console.error(e);
     }
+  }
+
+  function enterApp() {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app-shell').classList.add('visible');
   }
 
   function signOut() {
     google.accounts.oauth2.revoke(gapi.client.getToken()?.access_token, () => {});
     gapi.client.setToken(null);
+    document.getElementById('app-shell').classList.remove('visible');
+    document.getElementById('auth-screen').style.display = 'flex';
     setStatus('info', 'Signed out.');
-    document.getElementById('btn-signin').style.display  = 'inline-block';
-    document.getElementById('btn-signout').style.display = 'none';
-    document.getElementById('drive-result').style.display = 'none';
+    switchTabByName('dashboard');
+  }
+
+  function switchTab(btn) {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const target = btn.dataset.view;
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + target).classList.add('active');
+    document.querySelector('.page-content').scrollTop = 0;
+  }
+
+  function switchTabByName(name) {
+    const btn = document.querySelector(`.nav-tab[data-view="${name}"]`);
+    if (btn) switchTab(btn);
   }
 
   function setStatus(type, msg) {
     const box  = document.getElementById('status-box');
     const text = document.getElementById('status-text');
-    box.className = 'ok err info'.split(' ').reduce((c, t) => c.replace(t,''), box.className).trim();
+    box.className = box.className.replace(/\b(ok|err|info)\b/g, '').trim();
     box.classList.add(type);
     text.textContent = msg;
   }
