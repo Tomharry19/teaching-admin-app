@@ -1433,7 +1433,10 @@
 
       for (let ri = 0; ri < nameRows.length; ri++) {
         const row      = nameRows[ri];
-        const nameTopY = Math.min(...row.map(it => it.y));
+        // Use the TOP of the first text line (not the baseline) so photos never
+        // include any name text. hLine is the top-line height preserved by
+        // mergeTwoLineRows; fall back to h for unmerged single-line rows.
+        const nameTopY = Math.min(...row.map(it => it.y - (it.hLine ?? it.h)));
         const prevRow  = nameRows[ri - 1];
         // First row: start from below the header/title, not from the page top
         const photoTopY = prevRow
@@ -1501,6 +1504,7 @@
         const merged = cur.map((it, j) => ({
           ...it,
           text: it.text + (next[j] ? ' ' + next[j].text : ''),
+          hLine: it.h,   // height of the top line alone (used for photo-crop boundary)
           h: (next[j] ? next[j].y + next[j].h : it.y + it.h) - it.y,
         }));
         out.push(merged);
